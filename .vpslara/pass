@@ -1,0 +1,22 @@
+#!/bin/bash
+
+#/
+#--------------------------------------------------------------------------
+# vpslara User Password
+#--------------------------------------------------------------------------
+#
+# This file will display the vpslara user password
+#
+#/
+
+. /etc/.vpslara/includes/colors
+. /etc/.vpslara/includes/format
+
+vpslara
+
+PASS=$(cat /etc/.vpslara/tmp/pass)
+
+bar
+cyan "| vpslara User Password:"
+cyan "| $PASS"
+bar

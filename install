@@ -1,0 +1,62 @@
+#!/bin/bash
+
+#/
+#--------------------------------------------------------------------------
+# Install vpslara
+#--------------------------------------------------------------------------
+#
+# This part of the script will move a few files to the necessary locations,
+# add a new user 'vpslara', and add aliases for the CLI
+#
+#/
+
+
+# Move the files to /etc/.vpslara and create a root vpslara alias
+mv vpslara-master/.vpslara /etc/.vpslara
+echo "alias vpslara='sh /etc/.vpslara/vpslara'" >> /etc/bash.bashrc
+
+
+# Create a new password and create our new vpslara user
+PASS=$(openssl rand -base64 32)
+useradd -G sudo -d /home/vpslara -p $PASS -m vpslara
+
+
+# Give the vpslara user ability to not always require password
+echo 'vpslara ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+
+# Turn on SSH Passwords
+# sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+# echo -n 'AllowUsers vpslara' >> /etc/ssh/sshd_config
+# service ssh reload
+
+
+# Store the vpslara user password
+if [ ! -d /etc/.vpslara/tmp ]; then
+  sudo mkdir /etc/.vpslara/tmp
+fi
+sudo echo $PASS > /etc/.vpslara/tmp/pass
+
+sudo chown -R vpslara:vpslara /etc/.vpslara/tmp
+
+
+# Include our colors and format scripts
+. /etc/.vpslara/includes/colors
+. /etc/.vpslara/includes/format
+
+
+# Add vpslara alias to vpslara bashrc and the bin path dir for composer
+echo "alias vpslara='sh /etc/.vpslara/vpslara'" >> /home/vpslara/.bashrc
+echo "export PATH=~/.composer/vendor/bin:\$PATH" >> /home/vpslara/.bashrc
+
+
+# Show message after successfully installing
+vpslaraNoColor
+barNoColor
+echo "| Successfully installing!";
+barNoColor
+
+
+# Remove vpslara folder pulled from git repo and switch user to vpslara
+rm -rf vpslara-master
+su - vpslara

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#/
+#--------------------------------------------------------------------------
+# vpslara Main File
+#--------------------------------------------------------------------------
+#
+# This file will pass the argument to the necessary script.
+#
+#/
+
+if [ "$1" = "-h" ]
+then
+    . /etc/.vpslara/includes/help
+elif [ "$1" = "host" ] ; then
+	sudo sh /etc/.vpslara/$1 $2 $3
+else
+    . /etc/.vpslara/$1 $2 $3
+fi
